@@ -2,13 +2,22 @@ package me.fit.model;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.NamedQuery;
 
 @Entity
+@NamedQuery(name = Person.GET_ALL_PERSONS, query = "Select p from Person p")
 public class Person {
+
+    public static final String GET_ALL_PERSONS = "Person.getAllPersons";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_seq")
@@ -16,6 +25,10 @@ public class Person {
     private String name;
     private String surname;
     private String email;
+
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Reservation> reservations;
 
     public Person() {
     }
@@ -40,6 +53,14 @@ public class Person {
 
     public String getEmail() {
         return email;
+    }
+
+    public Set<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(Set<Reservation> reservations) {
+        this.reservations = reservations;
     }
 
     public void setId(Long id) {
@@ -105,7 +126,5 @@ public class Person {
     public String toString() {
         return id + ", " + name + ", " + surname + ", email:" + email;
     }
-
-    
 
 }

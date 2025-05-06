@@ -1,9 +1,18 @@
 package me.fit.model;
 
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Projection {
@@ -12,14 +21,20 @@ public class Projection {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "projection_seq")
     private Long id;
     private String dateTime;
+
+    @ManyToOne
+    @JoinColumn(name = "movie_id")
     private Movie movie;
+
+    @OneToMany(mappedBy = "projection", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Reservation> reservations;
 
     public Projection() {
     }
 
-    public Projection(String dateTime, Movie movie) {
+    public Projection(String dateTime) {
         this.dateTime = dateTime;
-        this.movie = movie;
     }
 
     public Long getId() {
@@ -32,6 +47,14 @@ public class Projection {
 
     public Movie getMovie() {
         return movie;
+    }
+
+    public Set<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(Set<Reservation> reservations) {
+        this.reservations = reservations;
     }
 
     public void setId(Long id) {

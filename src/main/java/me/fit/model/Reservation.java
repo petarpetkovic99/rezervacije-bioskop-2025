@@ -2,31 +2,48 @@ package me.fit.model;
 
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
 
 @Entity
+@NamedQuery(
+    name = Reservation.GET_RESERVATIONS_FOR_PERSON, 
+    query = "SELECT r FROM Reservation r WHERE r.person.id = :id"
+)
 public class Reservation {
+
+    public static final String GET_RESERVATIONS_FOR_PERSON = "Reservation.getReservationsForPerson";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reservation_seq")
     private Long id;
     private int numOfSeats;
-    private String date;
+    private String reservationDate;
     private boolean status;
-    private Set<Person> persons;
+
+    @ManyToOne()
+    @JoinColumn(name = "person_id")
+    private Person person;
+
+    @ManyToOne()
+    @JoinColumn(name = "projection_id")
+    private Projection projection;
 
     public Reservation() {
 
     }
 
-    public Reservation(int numOfSeats, String date, boolean status, Set<Person> persons) {
+    public Reservation(int numOfSeats, String reservationDate, boolean status) {
         this.numOfSeats = numOfSeats;
-        this.date = date;
+        this.reservationDate = reservationDate;
         this.status = status;
-        this.persons = persons;
     }
 
     public Long getId() {
@@ -46,11 +63,11 @@ public class Reservation {
     }
 
     public String getDate() {
-        return date;
+        return reservationDate;
     }
 
     public void setDate(String date) {
-        this.date = date;
+        this.reservationDate = date;
     }
 
     public boolean isStatus() {
@@ -61,12 +78,28 @@ public class Reservation {
         this.status = status;
     }
 
-    public Set<Person> getPersons() {
-        return persons;
+    public String getReservationDate() {
+        return reservationDate;
     }
 
-    public void setPersons(Set<Person> persons) {
-        this.persons = persons;
+    public void setReservationDate(String reservationDate) {
+        this.reservationDate = reservationDate;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public Projection getProjection() {
+        return projection;
+    }
+
+    public void setProjection(Projection projection) {
+        this.projection = projection;
     }
 
     @Override
@@ -75,9 +108,9 @@ public class Reservation {
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + numOfSeats;
-        result = prime * result + ((date == null) ? 0 : date.hashCode());
+        result = prime * result + ((reservationDate == null) ? 0 : reservationDate.hashCode());
         result = prime * result + (status ? 1231 : 1237);
-        result = prime * result + ((persons == null) ? 0 : persons.hashCode());
+        result = prime * result + ((person == null) ? 0 : person.hashCode());
         return result;
     }
 
@@ -97,25 +130,26 @@ public class Reservation {
             return false;
         if (numOfSeats != other.numOfSeats)
             return false;
-        if (date == null) {
-            if (other.date != null)
+        if (reservationDate == null) {
+            if (other.reservationDate != null)
                 return false;
-        } else if (!date.equals(other.date))
+        } else if (!reservationDate.equals(other.reservationDate))
             return false;
         if (status != other.status)
             return false;
-        if (persons == null) {
-            if (other.persons != null)
+        if (person == null) {
+            if (other.person != null)
                 return false;
-        } else if (!persons.equals(other.persons))
+        } else if (!person.equals(other.person))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "Reservation [id=" + id + ", numOfSeats=" + numOfSeats + ", date=" + date + ", status=" + status
-                + ", persons=" + persons + "]";
+        return "Reservation [id=" + id + ", numOfSeats=" + numOfSeats + ", date reservation=" + reservationDate
+                + ", status=" + status
+                + ", person=" + person + "]";
     }
 
 }

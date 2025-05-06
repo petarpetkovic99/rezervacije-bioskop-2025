@@ -2,10 +2,14 @@ package me.fit.model;
 
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Movie {
@@ -16,16 +20,21 @@ public class Movie {
     private String title;
     private String genre;
     private String length;
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private Set<Projection> projections;
+
+    @ManyToOne
+    @JoinColumn(name = "cinema_id")
+    private Cinema cinema;
 
     public Movie() {
     }
 
-    public Movie(String title, String genre, String length, Set<Projection> projections) {
+    public Movie(String title, String genre, String length) {
         this.title = title;
         this.genre = genre;
         this.length = length;
-        this.projections = projections;
     }
 
     public Long getId() {
