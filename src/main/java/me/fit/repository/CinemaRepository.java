@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import me.fit.model.Person;
 import me.fit.model.Projection;
 import me.fit.model.Reservation;
+import me.fit.model.Movie;
 import java.util.List;
 import java.util.HashSet;
 
@@ -32,6 +33,11 @@ public class CinemaRepository {
     }
 
     @Transactional
+    public Movie createMovie(Movie m) {
+        return em.merge(m);
+    }
+
+    @Transactional
 	public List<Person> getAllPersons() { 
 		List<Person> persons = em.createNamedQuery(Person.GET_ALL_PERSONS, Person.class).getResultList();
 
@@ -42,5 +48,10 @@ public class CinemaRepository {
 
 		return persons;
 	}
+
+    @Transactional
+    public List<Movie> getAllMoviesByGenre(String genre) {
+        return em.createQuery("Select m from Movie m where m.genre = :genre", Movie.class).setParameter("genre", genre).getResultList();
+    }
 
 }

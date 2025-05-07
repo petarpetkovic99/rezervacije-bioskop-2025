@@ -9,10 +9,12 @@ import jakarta.ws.rs.Path;
 import me.fit.model.Person;
 import me.fit.model.Projection;
 import me.fit.model.Reservation;
+import me.fit.model.Movie;
 import me.fit.repository.CinemaRepository;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Produces;
 import java.util.List;
+import jakarta.ws.rs.QueryParam;
 
 @Path("/cinema/")
 public class CinemaResource {
@@ -44,6 +46,14 @@ public class CinemaResource {
         return Response.ok().entity(r).build();
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("addMovie")
+    public Response addMovie(Movie movie) {
+        Movie m = cinemaRepository.createMovie(movie);
+        return Response.ok().entity(m).build();
+    }
+
     @GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("getAllPersons")
@@ -51,6 +61,15 @@ public class CinemaResource {
 		List<Person> persons = cinemaRepository.getAllPersons();
 
 		return Response.ok().entity(persons).build();
+	}
+
+    @GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("getAllMoviesByGenre")
+	public Response getAllMoviesByGenre(@QueryParam("genre") String genre) {
+		List<Movie> movies = cinemaRepository.getAllMoviesByGenre(genre);
+
+		return Response.ok().entity(movies).build();
 	}
 
 }
