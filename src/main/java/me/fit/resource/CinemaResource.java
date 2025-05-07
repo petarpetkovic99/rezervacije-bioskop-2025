@@ -72,4 +72,6 @@ public class CinemaResource {
 		return Response.ok().entity(movies).build();
 	}
 
+    
+
 }
